@@ -2,7 +2,7 @@ const exprss = require("express");
 const app = exprss();
 const cors = require("cors");
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -34,14 +34,33 @@ async function run() {
     // user collection
     app.post('/users', async(req, res)=>{
       const user = req.body;
+      // insert user if not exits
+      const query = {email: user?.email}
+      const exitstingUser = await userCollection.findOne(query)
+      if(exitstingUser){
+        return res.send({message: 'user already exit', insertedId: null})
+      }
       const result = await userCollection.insertOne(user);
       res.send(result)
     })
 
+
     app.get('/users', async(req, res)=>{
-      const result = await userCollection.find().toArray();
+      console.log(req.query.email)
+      let query = {}
+      if(req.query?.email){
+        query = {email: req.query.email}
+      }
+      const result = await userCollection.find(query).toArray();
       res.send(result);
     })
+
+    // app.get('/users/:id', async(req, res)=>{
+    //   const id = req.params.id;
+    //   const query = {_id: new ObjectId(id)};
+    //   const result = await userCollection.find(query)
+    //   res.send(result);
+    // })
 
 
     // Send a ping to confirm a successful connection
