@@ -28,7 +28,8 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    const userCollection = client.db('touristDB').collection('users');
+
+    const userInfoCollection = client.db('tuskHutDB').collection('users');
 
 
     // user collection
@@ -36,11 +37,11 @@ async function run() {
       const user = req.body;
       // insert user if not exits
       const query = {email: user?.email}
-      const exitstingUser = await userCollection.findOne(query)
+      const exitstingUser = await userInfoCollection.findOne(query)
       if(exitstingUser){
         return res.send({message: 'user already exit', insertedId: null})
       }
-      const result = await userCollection.insertOne(user);
+      const result = await userInfoCollection.insertOne(user);
       res.send(result)
     })
 
@@ -51,7 +52,7 @@ async function run() {
       if(req.query?.email){
         query = {email: req.query.email}
       }
-      const result = await userCollection.find(query).toArray();
+      const result = await userInfoCollection.find(query).toArray();
       res.send(result);
     })
 
