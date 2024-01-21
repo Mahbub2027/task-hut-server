@@ -1,18 +1,18 @@
 const exprss = require("express");
 const app = exprss();
 const cors = require("cors");
-require('dotenv').config()
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+require("dotenv").config();
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 
 // middleware
 app.use(cors());
 app.use(exprss.json());
 
-
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.l5wiuzk.mongodb.net/?retryWrites=true&w=majority`;
+
+// New test uri (Shafi)
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.0bzkare.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -20,7 +20,7 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
@@ -28,33 +28,30 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-
-    const userInfoCollection = client.db('tuskHutDB').collection('users');
-
+    const userInfoCollection = client.db("tuskHutDB").collection("users");
 
     // user collection
-    app.post('/users', async(req, res)=>{
+    app.post("/users", async (req, res) => {
       const user = req.body;
       // insert user if not exits
-      const query = {email: user?.email}
-      const exitstingUser = await userInfoCollection.findOne(query)
-      if(exitstingUser){
-        return res.send({message: 'user already exit', insertedId: null})
+      const query = { email: user?.email };
+      const exitstingUser = await userInfoCollection.findOne(query);
+      if (exitstingUser) {
+        return res.send({ message: "user already exit", insertedId: null });
       }
       const result = await userInfoCollection.insertOne(user);
-      res.send(result)
-    })
+      res.send(result);
+    });
 
-
-    app.get('/users', async(req, res)=>{
-      console.log(req.query.email)
-      let query = {}
-      if(req.query?.email){
-        query = {email: req.query.email}
+    app.get("/users", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
       }
       const result = await userInfoCollection.find(query).toArray();
       res.send(result);
-    })
+    });
 
     // app.get('/users/:id', async(req, res)=>{
     //   const id = req.params.id;
@@ -63,10 +60,33 @@ async function run() {
     //   res.send(result);
     // })
 
+    // ----------------------------------------------------------------
+    // To Delete user's account when "Delete Account" button is clicked
+    // Express endpoint for deleting user account `/deleteAccount/${uidToDelete}`
+    app.delete("/deleteAccount/:uidToDelete", async (req, res) => {
+      try {
+        const uid = req.params.uid;
+
+        // Delete user in Firebase Authentication
+        // await admin.auth().deleteUser(uid);
+
+        // Delete user in MongoDB
+        await userInfoCollection.deleteOne({ uid });
+
+        res.status(200).json({ message: "User account deleted successfully" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error deleting user account" });
+      }
+    });
+    // ----------------------------------------------------------------
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -74,14 +94,9 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-
-
-
-
-app.get('/', (req, res)=>{
-    res.send("Tusk hut is running.....")
-})
-app.listen(port, ()=>{
-    console.log(`TuskHut is running on port ${port}`)
-})
+app.get("/", (req, res) => {
+  res.send("Tusk hut is running.....");
+});
+app.listen(port, () => {
+  console.log(`TuskHut is running on port ${port}`);
+});
