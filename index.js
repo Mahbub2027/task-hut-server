@@ -1,8 +1,8 @@
 const exprss = require("express");
 const app = exprss();
 const cors = require("cors");
-require('dotenv').config()
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+require("dotenv").config()
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -29,24 +29,24 @@ async function run() {
     // await client.connect();
 
 
-    const userInfoCollection = client.db('tuskHutDB').collection('users');
+    const userInfoCollection = client.db("tuskHutDB").collection("users");
 
 
     // user collection
-    app.post('/users', async(req, res)=>{
+    app.post("/users", async(req, res)=>{
       const user = req.body;
       // insert user if not exits
       const query = {email: user?.email}
       const exitstingUser = await userInfoCollection.findOne(query)
       if(exitstingUser){
-        return res.send({message: 'user already exit', insertedId: null})
+        return res.send({message: "user already exit", insertedId: null})
       }
       const result = await userInfoCollection.insertOne(user);
       res.send(result)
     })
 
 
-    app.get('/users', async(req, res)=>{
+    app.get("/users", async(req, res)=>{
       console.log(req.query.email)
       let query = {}
       if(req.query?.email){
@@ -63,6 +63,58 @@ async function run() {
     //   res.send(result);
     // })
 
+    // for make admin api
+    app.patch('/users/admin/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const updateDoc = {
+        $set: {
+          role: "admin"
+        }
+      }
+      const result = await userInfoCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+    
+    // check admin or not
+    app.get("/users/admin/:email", async(req, res)=>{
+      const email = req.params.email;
+      // use jwt for better security
+      const query = {email: email};
+      const user = await userInfoCollection.findOne(query);
+      let admin = false;
+      if(user){
+        admin = user?.role === "admin"
+      }
+      res.send({admin})
+    })
+
+    // for make buyer api
+    app.patch("/users/buyer/:id", async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const updateDoc = {
+        $set: {
+          role: "buyer"
+        }
+      }
+      const result = await userInfoCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
+    // check buyer or not
+    app.get("/users/buyer/:email", async(req, res)=>{
+      const email = req.params.email;
+      // use jwt for better security
+      const query = {email: email};
+      const user = await userInfoCollection.findOne(query);
+      let buyer = false;
+      if(user){
+        buyer = user?.role === "buyer"
+      }
+      res.send({buyer})
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -76,12 +128,9 @@ run().catch(console.dir);
 
 
 
-
-
-
 app.get('/', (req, res)=>{
-    res.send("Tusk hut is running.....")
-})
+    res.send("Tusk hut is running.....");
+});
 app.listen(port, ()=>{
-    console.log(`TuskHut is running on port ${port}`)
+    console.log(`TuskHut is running on port ${port}`);
 })
