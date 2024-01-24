@@ -62,7 +62,7 @@ async function run() {
     //   res.send(result);
     // })
 
-    // for make admin api
+    // make admin api
     app.patch('/users/admin/:id', async(req, res)=>{
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)}
@@ -88,7 +88,7 @@ async function run() {
       res.send({admin})
     })
 
-    // for make buyer api
+    //  make buyer api
     app.patch("/users/buyer/:id", async(req, res)=>{
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)}
@@ -113,6 +113,28 @@ async function run() {
       }
       res.send({buyer})
     })
+
+    
+     // ----------------------------------------------------------------
+    // To Delete user's account when "Delete Account" button is clicked
+    // Express endpoint for deleting user account `/deleteAccount/${uidToDelete}`
+    app.delete("/deleteAccount/:uidToDelete", async (req, res) => {
+      try {
+        const uid = req.params.uid;
+
+        // Delete user in Firebase Authentication
+        // await admin.auth().deleteUser(uid);
+
+        // Delete user in MongoDB
+        await userInfoCollection.deleteOne({ uid });
+
+        res.status(200).json({ message: "User account deleted successfully" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error deleting user account" });
+      }
+    });
+    // ----------------------------------------------------------------
 
 
     // Send a ping to confirm a successful connection
