@@ -203,6 +203,25 @@ async function run() {
     });
     // ----------------------------------------------------------------
 
+   // Fetch Employee details from view details button (taskhut/findEmployee)
+ 
+   app.get("/users/employee", async (req, res) => {
+    let query = {};
+    query.role = { $exists: false };
+    const result = await userInfoCollection.find(query).toArray();
+    res.send(result);
+  });
+
+  app.get("/users/employee/:id", async (req, res) => {
+    const id = req.params.id;
+    const employeeinfo = await userInfoCollection.findOne({ _id: new ObjectId(id) });
+    res.send(employeeinfo);
+  });
+
+
+  //------------------------------------------------------------------------
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
