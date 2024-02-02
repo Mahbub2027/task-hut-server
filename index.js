@@ -28,6 +28,7 @@ async function run() {
 
 
     const userInfoCollection = client.db("tuskHutDB").collection("users");
+    const jobCollection = client.db("tuskHutDB").collection("jobs");
 
 
     // jwt api
@@ -221,6 +222,27 @@ async function run() {
 
   //------------------------------------------------------------------------
 
+  // create Find jobs api
+  
+  app.post("/jobs", async(req, res)=>{
+    const jobs = req.body;
+    const result = await jobCollection.insertOne(jobs);
+    res.send(result);
+  })
+
+  app.get('/jobs', async(req, res)=>{
+    const job = await jobCollection.find().toArray();
+    res.send(job);
+  })
+
+  app.get('/jobs/:id', async(req, res)=>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)};
+    const result = await jobCollection.findOne(query);
+    res.send(result);
+  })
+
+  
 
 
     // Send a ping to confirm a successful connection
