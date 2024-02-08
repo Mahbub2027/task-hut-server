@@ -30,6 +30,7 @@ async function run() {
     const userInfoCollection = client.db("tuskHutDB").collection("users");
     const jobCollection = client.db("tuskHutDB").collection("jobs");
     const companyCollection = client.db("tuskHutDB").collection("companies");
+    const blogCollection = client.db("tuskHutDB").collection("blogs");
 
 
     // jwt api
@@ -263,8 +264,27 @@ async function run() {
     res.send(result);
   });
   
+    // ############## create Blogs api ##################
+    app.post('/blogs', async(req, res)=>{
+      const blog = req.body;
+      const result = await blogCollection.insertOne(blog);
+      res.send(result);
+    })
+
+    app.get('/blog', async(req, res)=>{
+      const blog = await blogCollection.find().toArray();
+      res.send(blog);
+    })
+
+    app.get('/blog/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await blogCollection.findOne(query);
+      res.send(result);
+    })
 
 
+    
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
