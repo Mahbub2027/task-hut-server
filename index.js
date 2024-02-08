@@ -29,6 +29,7 @@ async function run() {
 
     const userInfoCollection = client.db("tuskHutDB").collection("users");
     const jobCollection = client.db("tuskHutDB").collection("jobs");
+    const companyCollection = client.db("tuskHutDB").collection("companies");
 
 
     // jwt api
@@ -222,7 +223,7 @@ async function run() {
 
   //------------------------------------------------------------------------
 
-  // create Find jobs api
+  // ########## create Find jobs api   ##########
   
   app.post("/jobs", async(req, res)=>{
     const jobs = req.body;
@@ -230,18 +231,37 @@ async function run() {
     res.send(result);
   })
 
-  app.get('/jobs', async(req, res)=>{
+  app.get("/jobs", async(req, res)=>{
     const job = await jobCollection.find().toArray();
     res.send(job);
   })
 
-  app.get('/jobs/:id', async(req, res)=>{
+  app.get("/jobs/:id", async(req, res)=>{
     const id = req.params.id;
     const query = {_id: new ObjectId(id)};
     const result = await jobCollection.findOne(query);
     res.send(result);
   })
 
+  // ########### create Companies api ######################
+  
+  app.post("/companies", async(req, res)=>{
+    const company = req.body;
+    const result = await companyCollection.insertOne(company);
+    res.send(result);
+  })
+
+  app.get("/companies", async(req, res)=>{
+    const company = await companyCollection.find().toArray();
+    res.send(company);
+  })
+
+  app.get("/companies/:id", async(req, res)=>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)};
+    const result = await companyCollection.findOne(query);
+    res.send(result);
+  });
   
 
 
