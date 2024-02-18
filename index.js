@@ -33,6 +33,8 @@ async function run() {
     const companyCollection = client.db("tuskHutDB").collection("companies");
     const blogCollection = client.db("tuskHutDB").collection("blogs");
     const reviewCollection = client.db("tuskHutDB").collection("reviews");
+    const saveJobCollection = client.db("tuskHutDB").collection("saveJobs");
+    const applyJobCollection = client.db("tuskHutDB").collection("applyJobs");
 
 
 
@@ -286,6 +288,74 @@ async function run() {
       res.send(result);
     })
 
+    // ****************** create Apply Jobs api ***************
+    app.post("/applyJobs", async(req, res)=>{
+      const applyjob = req.body;
+      const result = await applyJobCollection.insertOne(applyjob);
+      res.send(result);
+    })
+
+    app.get("/applyJobs", async(req,res)=>{
+      const result = await applyJobCollection.find().toArray();
+      res.send(result);
+    })
+
+    app.delete("/applyJobs/:id", async(req, res)=>{
+      const id = req.params.id;
+      const jobs = {_id: new ObjectId(id)};
+      const result = await applyJobCollection.deleteOne(jobs);
+      res.send(result);
+    })
+
+
+    // ****************** create save Jobs api  ******************    
+      app.post("/saveJobs", async(req, res)=>{
+      const saveJobs = req.body;
+      const result = await saveJobCollection.insertOne(saveJobs);
+      res.send(result);
+    })
+
+    // app.get("/saveJobs", async(req, res)=>{
+    //   const uniqueId = await saveJobCollection.distinct('jobId')
+    //   const uniqueDoc = await Promise.all(uniqueId.map(id=> saveJobCollection.findOne({jobId: id})))
+    //   res.send(uniqueDoc);
+    // })
+
+    // app.get("/saveJobs", async(req,res)=>{
+    //   const {job} = req.body;
+    //   const query = {jobId : job?.jobId}
+    //   const exitstingJob = await saveJobCollection.findOne(query);
+    //   if(exitstingJob){
+    //     return res.send({message: "jobs already found"})
+    //   }
+    //   // const query = {jobId: new ObjectId(id)};
+    //   const result = await saveJobCollection.find().toArray();
+    //   res.send(result);
+    // })
+
+    app.get("/saveJobs", async(req, res)=>{
+      const saveJobs = await saveJobCollection.find().toArray();
+      res.send(saveJobs);
+
+    })
+
+    // app.get("/saveJobs", async (req, res) => {
+    //   // console.log(req.query.email)
+    //   let query = {}
+    //   if (req.query?.email) {
+    //     query = { email: req.query.email }
+    //   }
+    //   const result = await userInfoCollection.find(query).toArray();
+    //   res.send(result);
+    // });
+
+    app.delete("/saveJobs/:id", async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const job = await saveJobCollection.deleteOne(query);
+      res.send(job);
+    })
+
     //---------------------------------------------------
 
     // =================== Reviews ======================
@@ -313,9 +383,9 @@ async function run() {
 }
 run().catch(console.dir);
 
-// app.get("/", (req, res) => {
-//   res.send("Tusk hut is running.....");
-// });
+app.get("/", (req, res) => {
+  res.send("Tusk hut is running.....");
+});
 app.listen(port, () => {
   console.log(`TuskHut is running on port ${port}`);
 });
