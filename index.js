@@ -31,6 +31,7 @@ async function run() {
     const userInfoCollection = client.db("tuskHutDB").collection("users");
     const jobCollection = client.db("tuskHutDB").collection("jobs");
     const companyCollection = client.db("tuskHutDB").collection("companies");
+    const employeeCollection = client.db("tuskHutDB").collection("employees");
     const blogCollection = client.db("tuskHutDB").collection("blogs");
     const reviewCollection = client.db("tuskHutDB").collection("reviews");
     const saveJobCollection = client.db("tuskHutDB").collection("saveJobs");
@@ -132,6 +133,42 @@ async function run() {
       const result = await userInfoCollection.deleteOne(query);
       res.send(result);
     })
+
+    // update employee profile
+    // app.get("/users/:id", async(req, res)=>{
+    //   const id = req.params.id;
+    //   const query = {_id: new ObjectId(id)};
+    //   const result = await userInfoCollection.findOne(query);
+    //   res.send(result);
+    // })
+
+    // app.put("/users/:id", async(req, res)=>{
+    //   const id = req.params.id;
+    //   const filter = {_id: new ObjectId(id)};
+    //   const options = {upsert : true};
+    //   const updateEmployee = req.body;
+    //   const updateDoc = {
+    //     $set : {
+    //       name : updateEmployee.name,
+    //          date_birth : updateEmployee.date_birth,
+    //          number : updateEmployee.number,
+    //          linkedin : updateEmployee.linkedin,
+    //          location : updateEmployee.location,
+    //          city : updateEmployee.city,
+    //          country : updateEmployee.country,
+    //          profession : updateEmployee.profession,
+    //          experience : updateEmployee.experience,
+    //          workPreference : updateEmployee.workPreference,
+    //          resume : updateEmployee.resume,
+    //          portfolio : updateEmployee.portfolio,
+    //          github : updateEmployee.github,
+    //          skills : updateEmployee.skills,
+    //          about : updateEmployee.about,
+    //     }
+    //   }
+    //   const result = await userInfoCollection.updateOne(filter, updateDoc, options);
+    //   res.send(result);
+    // })
 
     // make admin api
     app.patch('/users/admin/:id', verifyToken, verifyAdmin, async (req, res) => {
@@ -266,6 +303,27 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await companyCollection.findOne(query);
+      res.send(result);
+    });
+
+
+    // ########### create Employees api ######################
+
+    app.post("/employees", async (req, res) => {
+      const employee = req.body;
+      const result = await employeeCollection.insertOne(employee);
+      res.send(result);
+    })
+
+    app.get("/employees", async (req, res) => {
+      const employee = await employeeCollection.find().toArray();
+      res.send(employee);
+    })
+
+    app.get("/employees/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await employeeCollection.findOne(query);
       res.send(result);
     });
 
