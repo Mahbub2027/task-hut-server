@@ -290,6 +290,11 @@ async function run() {
 
     app.post("/companies", async (req, res) => {
       const company = req.body;
+      const query = {email: company.email}
+      const exitstingCompany = await companyCollection.findOne(query);
+      if(exitstingCompany){
+        return res.send({message: "company data already found"})
+      }
       const result = await companyCollection.insertOne(company);
       res.send(result);
     })
@@ -311,6 +316,12 @@ async function run() {
 
     app.post("/employees", async (req, res) => {
       const employee = req.body;
+
+      const query = {employee_email : employee?.employee_email}
+      const exitstingEmployee = await employeeCollection.findOne(query);
+      if(exitstingEmployee){
+        return res.send({message: "employee already found"})
+      }
       const result = await employeeCollection.insertOne(employee);
       res.send(result);
     })
@@ -362,6 +373,32 @@ async function run() {
       const id = req.params.id;
       const jobs = {_id: new ObjectId(id)};
       const result = await applyJobCollection.deleteOne(jobs);
+      res.send(result);
+    })
+
+    // changed role 
+    //  make short-listed 
+    app.patch("/applyJobs/shortlisted/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const updateDoc = {
+        $set: {
+          role: "shortlisted"
+        }
+      }
+      const result = await applyJobCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+    // make rejected
+    app.patch("/applyJobs/rejected/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const updateDoc = {
+        $set: {
+          role: "rejected"
+        }
+      }
+      const result = await applyJobCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
 
