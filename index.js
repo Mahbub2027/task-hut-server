@@ -454,13 +454,13 @@ async function run() {
     //---------------------------------------------------
 
     // =================== Reviews ======================
-    app.post("/", async (req, res) => {
+    app.post("/reviews", async (req, res) => {
       const reviewData = req.body;
       const result = await reviewCollection.insertOne(reviewData);
       res.send(result);
     });
 
-    app.get("/", async (req, res) => {
+    app.get('/reviews', async (req, res) => {
       const reviewData = await reviewCollection.find().toArray();
       res.send(reviewData);
     });
