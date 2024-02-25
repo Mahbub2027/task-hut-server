@@ -165,11 +165,7 @@ async function run() {
     // })
 
     // make admin api
-    app.patch(
-      "/users/admin/:id",
-      verifyToken,
-      verifyAdmin,
-      async (req, res) => {
+    app.patch("/users/admin/:id",verifyToken,verifyAdmin,async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const updateDoc = {
@@ -198,11 +194,7 @@ async function run() {
     });
 
     //  make buyer api
-    app.patch(
-      "/users/buyer/:id",
-      verifyToken,
-      verifyBuyer,
-      async (req, res) => {
+    app.patch("/users/buyer/:id",verifyToken,verifyBuyer,async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const updateDoc = {
@@ -379,6 +371,7 @@ async function run() {
     });
 
     // changed role
+
     //  make short-listed
     app.patch("/applyJobs/shortlisted/:id", async (req, res) => {
       const id = req.params.id;
@@ -391,6 +384,7 @@ async function run() {
       const result = await applyJobCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
+
     // make rejected
     app.patch("/applyJobs/rejected/:id", async (req, res) => {
       const id = req.params.id;
@@ -398,6 +392,45 @@ async function run() {
       const updateDoc = {
         $set: {
           role: "rejected",
+        },
+      };
+      const result = await applyJobCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    // assigned Task
+    app.patch("/applyJobs/assignedTask/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: "check email",
+        },
+      };
+      const result = await applyJobCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    // task Complete 
+    app.patch("/applyJobs/complete/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: "completed",
+        },
+      };
+      const result = await applyJobCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    // employee hired
+    app.patch("/applyJobs/confirm/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: "got hired",
         },
       };
       const result = await applyJobCollection.updateOne(filter, updateDoc);
