@@ -35,6 +35,8 @@ async function run() {
     const reviewCollection = client.db("tuskHutDB").collection("reviews");
     const saveJobCollection = client.db("tuskHutDB").collection("saveJobs");
     const applyJobCollection = client.db("tuskHutDB").collection("applyJobs");
+    const careerjobsCollection = client.db("tuskHutDB").collection('careerjobs');
+
 
     // jwt api
     app.post("/jwt", async (req, res) => {
@@ -548,7 +550,17 @@ async function run() {
       res.send(job);
     });
 
+    //---------------------Career Job Post From Admin Dashboard------------------------------
+    app.post("/careerjobs",verifyToken,verifyAdmin,async (req, res) => {
+      const id = req.params.id;
+      const newJob = req.body;
+      const result = await careerjobsCollection.insertOne(newJob);
+      res.send(result);
+    }
+  );
     //---------------------------------------------------
+
+
 
     // =================== Reviews ======================
     app.post("/reviews", async (req, res) => {
