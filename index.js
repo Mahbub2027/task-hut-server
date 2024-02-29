@@ -36,6 +36,7 @@ async function run() {
     const saveJobCollection = client.db("tuskHutDB").collection("saveJobs");
     const applyJobCollection = client.db("tuskHutDB").collection("applyJobs");
     const careerjobsCollection = client.db("tuskHutDB").collection('careerjobs');
+    const NewsLetterSubsCollection = client.db("tuskHutDB").collection('newslettersubscribers');
 
 
     // jwt api
@@ -487,14 +488,21 @@ async function run() {
     });
 
     //---------------------Career Job Post From Admin Dashboard------------------------------
-    app.post("/careerjobs",verifyToken,verifyAdmin,async (req, res) => {
+    app.post("/careerjobs",verifyToken,async (req, res) => {
       const id = req.params.id;
       const newJob = req.body;
       const result = await careerjobsCollection.insertOne(newJob);
       res.send(result);
     }
   );
-    //---------------------------------------------------
+    //--------------------------------------NewsLetter Subscription List----------------------
+    app.post('/newsletter',async(req,res)=>{
+      const NewsLetterData = req.body;
+      const result = await NewsLetterSubsCollection.insertOne(NewsLetterData);
+      res.send(result);
+  })
+
+    //----------------------------------------------------------------------------------------
 
 
 
