@@ -553,14 +553,13 @@ async function run() {
 
     //---------------------Career Job Post From Admin Dashboard------------------------------
     app.post("/careerjobs",verifyToken,async (req, res) => {
-      const id = req.params.id;
       const newJob = req.body;
       const result = await careerjobsCollection.insertOne(newJob);
       res.send(result);
     }
   );
     //--------------------------------------NewsLetter Subscription List----------------------
-    app.post('/newsletter',async(req,res)=>{
+    app.post("/newsletter",verifyToken,async(req,res)=>{
       const NewsLetterData = req.body;
       const result = await NewsLetterSubsCollection.insertOne(NewsLetterData);
       res.send(result);
