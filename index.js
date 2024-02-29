@@ -284,6 +284,70 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/jobs/:id", async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await jobCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    // apply_role change 
+    // closed
+    app.patch("/jobs/closed/:id", async(req, res)=>{
+      const id =  req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          apply_role: "closed"
+        }
+      }
+      const result = await jobCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+    // open
+    app.patch("/jobs/open/:id", async(req, res)=>{
+      const id =  req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          apply_role: "open"
+        }
+      }
+      const result = await jobCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
+    // update jobs
+    app.put("/jobs/:id", async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const updateJobs = req.body;
+      const updateDoc = {
+        $set : {
+          company_name: updateJobs.company_name,
+                job_title: updateJobs.job_title,
+                // company_email: updateJobs.company_email,
+                area: updateJobs.area,
+                city: updateJobs.city,
+                country: updateJobs.country,
+                category: updateJobs.category,
+                job_type: updateJobs.job_type,
+                publish_date: updateJobs.publish_date,
+                deadline_date: updateJobs.deadline_date,
+                experience: updateJobs.experience,
+                salary_range: updateJobs.salary_range,
+                overview: updateJobs.overview,
+                skills: updateJobs.skills,
+                benefits: updateJobs.benefits,
+                requirements: updateJobs.requirements,
+                responsibilities: updateJobs.responsibilities,
+        }
+      }
+      const result = await jobCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    })
+
     // ########### create Companies api ######################
 
     app.post("/companies", async (req, res) => {
