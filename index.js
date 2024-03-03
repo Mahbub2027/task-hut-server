@@ -372,6 +372,30 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/companies/:id", async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = { upsert: true };
+      const updateCompany = req.body;
+      const updateDoc = {
+        $set : {
+          company_name: updateCompany.company_name,
+          about: updateCompany.about,
+          company_size: updateCompany.company_size,
+          founded_in: updateCompany.founded_in,
+          phone: updateCompany.phone,
+          linkedin: updateCompany.linkedin,
+          github: updateCompany.github,
+          website: updateCompany.website,
+          location: updateCompany.location,
+          city: updateCompany.city,
+          country: updateCompany.country,
+        }
+      }
+      const result = await companyCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    })
+
     // ########### create Employees api ######################
 
     app.post("/employees", async (req, res) => {
@@ -397,6 +421,35 @@ async function run() {
       const result = await employeeCollection.findOne(query);
       res.send(result);
     });
+
+    app.put("/employees/:id", async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = { upsert: true };
+      const updateEmployee = req.body;
+      const updateDoc = {
+        $set : {
+                name : updateEmployee.name,
+                date_birth : updateEmployee.date_birth,
+                // cover_img: res.updateEmployee.updateEmployee.display_url,
+                number : updateEmployee.number,
+                linkedin : updateEmployee.linkedin,
+                location : updateEmployee.location,
+                city : updateEmployee.city,
+                country : updateEmployee.country,
+                profession : updateEmployee.profession,
+                experience : updateEmployee.experience,
+                workPreference : updateEmployee.workPreference,
+                resume : updateEmployee.resume,
+                portfolio : updateEmployee.portfolio,
+                github : updateEmployee.github,
+                skills : updateEmployee.skills,
+                about : updateEmployee.about,
+        }
+      }
+      const result = await employeeCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    })
 
     // ############## create Blogs api ##################
     app.post("/blogs", async (req, res) => {
