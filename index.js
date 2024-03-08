@@ -36,7 +36,7 @@ async function run() {
     const saveJobCollection = client.db("tuskHutDB").collection("saveJobs");
     const applyJobCollection = client.db("tuskHutDB").collection("applyJobs");
     const careerjobsCollection = client.db("tuskHutDB").collection('careerjobs');
-    const NewsLetterSubsCollection = client.db("tuskHutDB").collection('newslettersubscribers');
+    const newsLetterSubsCollection = client.db("tuskHutDB").collection('newslettersubscribers');
 
 
     // jwt api
@@ -130,42 +130,6 @@ async function run() {
       const result = await userInfoCollection.deleteOne(query);
       res.send(result);
     });
-
-    // update employee profile
-    // app.get("/users/:id", async(req, res)=>{
-    //   const id = req.params.id;
-    //   const query = {_id: new ObjectId(id)};
-    //   const result = await userInfoCollection.findOne(query);
-    //   res.send(result);
-    // })
-
-    // app.put("/users/:id", async(req, res)=>{
-    //   const id = req.params.id;
-    //   const filter = {_id: new ObjectId(id)};
-    //   const options = {upsert : true};
-    //   const updateEmployee = req.body;
-    //   const updateDoc = {
-    //     $set : {
-    //       name : updateEmployee.name,
-    //          date_birth : updateEmployee.date_birth,
-    //          number : updateEmployee.number,
-    //          linkedin : updateEmployee.linkedin,
-    //          location : updateEmployee.location,
-    //          city : updateEmployee.city,
-    //          country : updateEmployee.country,
-    //          profession : updateEmployee.profession,
-    //          experience : updateEmployee.experience,
-    //          workPreference : updateEmployee.workPreference,
-    //          resume : updateEmployee.resume,
-    //          portfolio : updateEmployee.portfolio,
-    //          github : updateEmployee.github,
-    //          skills : updateEmployee.skills,
-    //          about : updateEmployee.about,
-    //     }
-    //   }
-    //   const result = await userInfoCollection.updateOne(filter, updateDoc, options);
-    //   res.send(result);
-    // })
 
     // make admin api
     app.patch("/users/admin/:id",verifyToken,verifyAdmin,async (req, res) => {
@@ -564,38 +528,10 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/saveJobs", async(req, res)=>{
-    //   const uniqueId = await saveJobCollection.distinct('jobId')
-    //   const uniqueDoc = await Promise.all(uniqueId.map(id=> saveJobCollection.findOne({jobId: id})))
-    //   res.send(uniqueDoc);
-    // })
-
-    // app.get("/saveJobs", async(req,res)=>{
-    //   const {job} = req.body;
-    //   const query = {jobId : job?.jobId}
-    //   const exitstingJob = await saveJobCollection.findOne(query);
-    //   if(exitstingJob){
-    //     return res.send({message: "jobs already found"})
-    //   }
-    //   // const query = {jobId: new ObjectId(id)};
-    //   const result = await saveJobCollection.find().toArray();
-    //   res.send(result);
-    // })
-
     app.get("/saveJobs", async (req, res) => {
       const saveJobs = await saveJobCollection.find().toArray();
       res.send(saveJobs);
     });
-
-    // app.get("/saveJobs", async (req, res) => {
-    //   // console.log(req.query.email)
-    //   let query = {}
-    //   if (req.query?.email) {
-    //     query = { email: req.query.email }
-    //   }
-    //   const result = await userInfoCollection.find(query).toArray();
-    //   res.send(result);
-    // });
 
     app.delete("/saveJobs/:id", async (req, res) => {
       const id = req.params.id;
@@ -616,10 +552,14 @@ async function run() {
     res.send(careerJobs);
   })
     //--------------------------------------NewsLetter Subscription List----------------------
-    app.post("/newsletter",verifyToken,async(req,res)=>{
+    app.post("/newsletter",async(req,res)=>{
       const NewsLetterData = req.body;
-      const result = await NewsLetterSubsCollection.insertOne(NewsLetterData);
+      const result = await newsLetterSubsCollection.insertOne(NewsLetterData);
       res.send(result);
+  })
+  app.get("/newsletter", async (req, res)=>{
+    const newsLetter = await newsLetterSubsCollection.find().toArray();
+    res.send(newsLetter);
   })
 
     //----------------------------------------------------------------------------------------
