@@ -605,12 +605,16 @@ async function run() {
     });
 
     //---------------------Career Job Post From Admin Dashboard------------------------------
-    app.post("/careerjobs",verifyToken,async (req, res) => {
+    app.post("/careerjobs", async (req, res) => {
       const newJob = req.body;
       const result = await careerjobsCollection.insertOne(newJob);
       res.send(result);
     }
   );
+  app.get("/careerjobs", async (req, res)=>{
+    const careerJobs = await careerjobsCollection.find().toArray();
+    res.send(careerJobs);
+  })
     //--------------------------------------NewsLetter Subscription List----------------------
     app.post("/newsletter",verifyToken,async(req,res)=>{
       const NewsLetterData = req.body;
