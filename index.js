@@ -435,6 +435,13 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/blogs/:id",async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await blogCollection.deleteOne(query);
+      res.send(result);
+  })
+
     // ****************** create Apply Jobs api ***************
     app.post("/applyJobs", async (req, res) => {
       const applyjob = req.body;
@@ -547,10 +554,25 @@ async function run() {
       res.send(result);
     }
   );
+
   app.get("/careerjobs", async (req, res)=>{
     const careerJobs = await careerjobsCollection.find().toArray();
     res.send(careerJobs);
-  })
+  });
+
+  app.get('/careerjobs/:id',async(req,res)=>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)};
+    const result = await careerjobsCollection.findOne(query);
+    res.send(result);
+ });
+
+ app.delete('/careerjobs/:id',async(req,res)=>{
+  const id = req.params.id;
+  const query = {_id: new ObjectId(id)};
+  const result = await careerjobsCollection.deleteOne(query);
+  res.send(result);
+})
     //--------------------------------------NewsLetter Subscription List----------------------
     app.post("/newsletter",async(req,res)=>{
       const NewsLetterData = req.body;
