@@ -111,11 +111,6 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/users", verifyToken, async(req, res)=>{
-    //   const  result = await userInfoCollection.find().toArray();
-    //   res.send(result)
-
-    // })
 
     app.get("/users/:id", async (req, res) => {
       const id = req.params.id;
@@ -291,7 +286,6 @@ async function run() {
         $set : {
           company_name: updateJobs.company_name,
                 job_title: updateJobs.job_title,
-                // company_email: updateJobs.company_email,
                 area: updateJobs.area,
                 city: updateJobs.city,
                 country: updateJobs.country,
@@ -396,7 +390,6 @@ async function run() {
         $set : {
                 name : updateEmployee.name,
                 date_birth : updateEmployee.date_birth,
-                // cover_img: res.updateEmployee.updateEmployee.display_url,
                 number : updateEmployee.number,
                 linkedin : updateEmployee.linkedin,
                 location : updateEmployee.location,
